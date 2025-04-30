@@ -37,6 +37,8 @@ public class Quiz {
     public void setUserId(String userId) { this.userId = userId; }
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
-    public List<Question> getQuestions() { return questions; }
+    public List<Question> getQuestions() { 
+        return questions; }
     public void setQuestions(List<Question> questions) { this.questions = questions; }
-}
+} 
+// meka comment ekaka
