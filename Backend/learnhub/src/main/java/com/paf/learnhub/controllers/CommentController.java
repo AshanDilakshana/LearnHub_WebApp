@@ -19,10 +19,10 @@ public class CommentController {
     public ResponseEntity<Comment> addComment(@RequestBody Comment comment) {
         try {
             Comment savedComment = commentService.addComment(
-                    comment.getPostId(),
-                    comment.getUserId(),
-                    comment.getUserName(),
-                    comment.getContent());
+                    comment.getPostId(), // get post id
+                    comment.getUserId(), // get user id
+                    comment.getUserName(), // get user name
+                    comment.getContent());// get content
             return ResponseEntity.ok(savedComment);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
