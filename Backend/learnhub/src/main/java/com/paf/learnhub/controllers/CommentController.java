@@ -19,11 +19,10 @@ public class CommentController {
     public ResponseEntity<Comment> addComment(@RequestBody Comment comment) {
         try {
             Comment savedComment = commentService.addComment(
-                comment.getPostId(),
-                comment.getUserId(),
-                comment.getUserName(),
-                comment.getContent()
-            );
+                    comment.getPostId(),
+                    comment.getUserId(),
+                    comment.getUserName(),
+                    comment.getContent());
             return ResponseEntity.ok(savedComment);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -40,17 +39,16 @@ public class CommentController {
         }
     }
 
-    // *** Changed Code Section Start ***
+    // *** Changed Code Section Start
     @PutMapping("/{id}")
     public ResponseEntity<Comment> updateComment(
             @PathVariable String id,
             @RequestBody UpdateCommentRequest request) {
         try {
             Comment updatedComment = commentService.updateComment(
-                id,
-                request.getContent(),
-                request.getUserId()
-            );
+                    id,
+                    request.getContent(),
+                    request.getUserId());
             return ResponseEntity.ok(updatedComment);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -62,14 +60,26 @@ public class CommentController {
         commentService.deleteComment(id, comment.getUserId());
         return ResponseEntity.ok().build();
     };
+
     public static class UpdateCommentRequest {
         private String userId;
         private String content;
 
-        public String getUserId() { return userId; }
-        public void setUserId(String userId) { this.userId = userId; }
-        public String getContent() { return content; }
-        public void setContent(String content) { this.content = content; }
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
     }
-    // *** Changed Code Section End ***
+
 }
