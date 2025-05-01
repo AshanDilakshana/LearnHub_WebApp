@@ -14,6 +14,8 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;// Injecting the CommentService
+    // Crud(Create,Read,Update,Delete)
+    // Create
 
     @PostMapping
     public ResponseEntity<Comment> addComment(@RequestBody Comment comment) {
@@ -29,6 +31,7 @@ public class CommentController {
         }
     }
 
+    // Read
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable String postId) {
         try {
@@ -40,6 +43,7 @@ public class CommentController {
     }
 
     // Changed Code Section Start
+    // Update
     @PutMapping("/{id}")
     public ResponseEntity<Comment> updateComment(
             @PathVariable String id,
@@ -55,6 +59,7 @@ public class CommentController {
         }
     }
 
+    // Delete
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable String id, @RequestBody Comment comment) {
         commentService.deleteComment(id, comment.getUserId());
