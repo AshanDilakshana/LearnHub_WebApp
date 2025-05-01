@@ -10,12 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "comments")
 public class Comment {
     @Id
-    private String id;// Unique identifier for the comment (MongoDB _id)
-    private String postId;// ID of the post this comment belongs to
-    private String userId;// ID of the user who wrote the comment
-    private String userName;// Name of the user who wrote the comment
-    private String content;// Actual text content of the comment
-    private String createdAt;// Timestamp when the comment was created
+    private String id;// The comment's unique ID
+    private String postId;// The ID of the post this comment is for
+    private String userId;// The ID of the user who wrote the comment
+    private String userName;// The name of the user who wrote the comment
+    private String content;// The message/text of the comment
+    private String createdAt;// When the comment was posted (date and time)
 
     // Getters and Setters
     public String getId() { // id gettere
