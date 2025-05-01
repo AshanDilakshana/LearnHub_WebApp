@@ -14,9 +14,9 @@ public class Comment {
     private String createdAt;
 
     // Getters and Setters
-    public String getId() {
+    public String getId() {// id gettere
         return id;
-    } // id gettere
+    }
 
     public void setId(String id) {
         this.id = id;
@@ -61,4 +61,5 @@ public class Comment {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
 }
