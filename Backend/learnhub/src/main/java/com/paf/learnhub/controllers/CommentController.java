@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comments")
+@RequestMapping("/api/comments") // Base route for all comment-related API endpoints
 public class CommentController {
 
     @Autowired
-    private CommentService commentService;
+    private CommentService commentService;// Injecting the CommentService
 
     @PostMapping
     public ResponseEntity<Comment> addComment(@RequestBody Comment comment) {
@@ -39,7 +39,7 @@ public class CommentController {
         }
     }
 
-    // *** Changed Code Section Start
+    // Changed Code Section Start
     @PutMapping("/{id}")
     public ResponseEntity<Comment> updateComment(
             @PathVariable String id,
@@ -61,6 +61,9 @@ public class CommentController {
         return ResponseEntity.ok().build();
     };
 
+    /**
+     * Helper class to hold request data for updating a comment.
+     */
     public static class UpdateCommentRequest {
         private String userId;
         private String content;
