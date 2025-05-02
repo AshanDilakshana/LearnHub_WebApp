@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getLearningPlans, createLearningPlan, updateLearningPlan, deleteLearningPlan } from '../utils/api';
 import { LearningPlan } from '../types/types';
-import { PlusIcon, PencilIcon, TrashIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, PencilIcon, TrashIcon, XMarkIcon, CheckIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline';
 
 function LearningPlans() {
   const [learningPlans, setLearningPlans] = useState<LearningPlan[]>([]);
@@ -13,6 +13,17 @@ function LearningPlans() {
     timeline: '',
   });
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [formErrors, setFormErrors] = useState({
+    title: '',
+    topics: '',
+    timeline: ''
+  });
+  const [editFormErrors, setEditFormErrors] = useState({
+    title: '',
+    topics: '',
+    timeline: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const userId = localStorage.getItem('userId') || 'user1';
 
   useEffect(() => {
@@ -27,7 +38,80 @@ function LearningPlans() {
     fetchPlans();
   }, []);
 
+  // Validation function for create form
+  const validateForm = () => {
+    let valid = true;
+    const errors = {
+      title: '',
+      topics: '',
+      timeline: ''
+    };
+
+    // Check title
+    if (!newLearningPlan.title.trim()) {
+      errors.title = 'Title is required';
+      valid = false;
+    } else if (newLearningPlan.title.length > 100) {
+      errors.title = 'Title must be less than 100 characters';
+      valid = false;
+    }
+
+    // Check topics
+    if (!newLearningPlan.topics[0]?.trim()) {
+      errors.topics = 'At least one topic is required';
+      valid = false;
+    }
+
+    // Check timeline
+    if (!newLearningPlan.timeline.trim()) {
+      errors.timeline = 'Timeline is required';
+      valid = false;
+    }
+
+    setFormErrors(errors);
+    return valid;
+  };
+
+  // Validation function for edit form
+  const validateEditForm = () => {
+    let valid = true;
+    const errors = {
+      title: '',
+      topics: '',
+      timeline: ''
+    };
+
+    // Check title
+    if (!editLearningPlanForm.title.trim()) {
+      errors.title = 'Title is required';
+      valid = false;
+    } else if (editLearningPlanForm.title.length > 100) {
+      errors.title = 'Title must be less than 100 characters';
+      valid = false;
+    }
+
+    // Check topics
+    if (!editLearningPlanForm.topics[0]?.trim()) {
+      errors.topics = 'At least one topic is required';
+      valid = false;
+    }
+
+    // Check timeline
+    if (!editLearningPlanForm.timeline.trim()) {
+      errors.timeline = 'Timeline is required';
+      valid = false;
+    }
+
+    setEditFormErrors(errors);
+    return valid;
+  };
+
   const handleCreateLearningPlan = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       await createLearningPlan({
         userId,
@@ -39,17 +123,26 @@ function LearningPlans() {
       setLearningPlans(plansRes.data);
       setNewLearningPlan({ title: '', topics: [''], timeline: '' });
       setShowCreateForm(false);
+      setFormErrors({ title: '', topics: '', timeline: '' });
     } catch (error) {
       console.error('Create learning plan error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleEditLearningPlan = (plan: LearningPlan) => {
     setEditLearningPlanId(plan.id);
     setEditLearningPlanForm({ title: plan.title, topics: plan.topics, timeline: plan.timeline });
+    setEditFormErrors({ title: '', topics: '', timeline: '' });
   };
 
   const handleUpdateLearningPlan = async () => {
+    if (!validateEditForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       await updateLearningPlan(editLearningPlanId!, {
         title: editLearningPlanForm.title,
@@ -60,13 +153,15 @@ function LearningPlans() {
       setLearningPlans(plansRes.data);
       setEditLearningPlanId(null);
       setEditLearningPlanForm({ title: '', topics: [''], timeline: '' });
+      setEditFormErrors({ title: '', topics: '', timeline: '' });
     } catch (error) {
       console.error('Update learning plan error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDeleteLearningPlan = async (id: string) => {
-    // Replace the direct confirm call with window.confirm
     if (window.confirm('Are you sure you want to delete this learning plan?')) {
       try {
         await deleteLearningPlan(id);
@@ -101,7 +196,11 @@ function LearningPlans() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold text-gray-800">Create Learning Plan</h2>
             <button 
-              onClick={() => setShowCreateForm(false)}
+              onClick={() => {
+                setShowCreateForm(false);
+                setFormErrors({ title: '', topics: '', timeline: '' });
+                setNewLearningPlan({ title: '', topics: [''], timeline: '' });
+              }}
               className="text-gray-500 hover:text-gray-700"
             >
               <XMarkIcon className="h-5 w-5" />
@@ -110,53 +209,87 @@ function LearningPlans() {
           
           <div className="space-y-4">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
               <input
                 id="title"
                 type="text"
                 placeholder="e.g., Master React in 3 Months"
                 value={newLearningPlan.title}
-                onChange={(e) => setNewLearningPlan({ ...newLearningPlan, title: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                onChange={(e) => {
+                  setNewLearningPlan({ ...newLearningPlan, title: e.target.value });
+                  if (formErrors.title) setFormErrors({...formErrors, title: ''});
+                }}
+                className={`w-full px-4 py-2 border ${formErrors.title ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
               />
+              {formErrors.title && (
+                <p className="mt-1 text-sm text-red-600 flex items-center">
+                  <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+                  {formErrors.title}
+                </p>
+              )}
             </div>
             
             <div>
-              <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-1">Topics</label>
+              <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-1">Topics *</label>
               <input
                 id="topic"
                 type="text"
                 placeholder="e.g., React, Redux, TypeScript"
                 value={newLearningPlan.topics[0]}
-                onChange={(e) => setNewLearningPlan({ ...newLearningPlan, topics: [e.target.value] })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                onChange={(e) => {
+                  setNewLearningPlan({ ...newLearningPlan, topics: [e.target.value] });
+                  if (formErrors.topics) setFormErrors({...formErrors, topics: ''});
+                }}
+                className={`w-full px-4 py-2 border ${formErrors.topics ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
               />
+              {formErrors.topics && (
+                <p className="mt-1 text-sm text-red-600 flex items-center">
+                  <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+                  {formErrors.topics}
+                </p>
+              )}
+              <p className="mt-1 text-xs text-gray-500">Separate multiple topics with commas</p>
             </div>
             
             <div>
-              <label htmlFor="timeline" className="block text-sm font-medium text-gray-700 mb-1">Timeline</label>
+              <label htmlFor="timeline" className="block text-sm font-medium text-gray-700 mb-1">Timeline *</label>
               <input
                 id="timeline"
                 type="text"
                 placeholder="e.g., 3 months, 1 hour daily"
                 value={newLearningPlan.timeline}
-                onChange={(e) => setNewLearningPlan({ ...newLearningPlan, timeline: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                onChange={(e) => {
+                  setNewLearningPlan({ ...newLearningPlan, timeline: e.target.value });
+                  if (formErrors.timeline) setFormErrors({...formErrors, timeline: ''});
+                }}
+                className={`w-full px-4 py-2 border ${formErrors.timeline ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
               />
+              {formErrors.timeline && (
+                <p className="mt-1 text-sm text-red-600 flex items-center">
+                  <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+                  {formErrors.timeline}
+                </p>
+              )}
             </div>
             
             <div className="flex justify-end pt-2">
               <button 
-                onClick={() => setShowCreateForm(false)}
+                onClick={() => {
+                  setShowCreateForm(false);
+                  setFormErrors({ title: '', topics: '', timeline: '' });
+                  setNewLearningPlan({ title: '', topics: [''], timeline: '' });
+                }}
                 className="mr-3 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button 
                 onClick={handleCreateLearningPlan}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className={`px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                disabled={isSubmitting}
               >
-                Create Plan
+                {isSubmitting ? 'Creating...' : 'Create Plan'}
               </button>
             </div>
           </div>
@@ -182,42 +315,75 @@ function LearningPlans() {
                 <div className="p-6">
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
                       <input
                         type="text"
                         value={editLearningPlanForm.title}
-                        onChange={(e) => setEditLearningPlanForm({ ...editLearningPlanForm, title: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        onChange={(e) => {
+                          setEditLearningPlanForm({ ...editLearningPlanForm, title: e.target.value });
+                          if (editFormErrors.title) setEditFormErrors({...editFormErrors, title: ''});
+                        }}
+                        className={`w-full px-3 py-2 border ${editFormErrors.title ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
                       />
+                      {editFormErrors.title && (
+                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                          <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+                          {editFormErrors.title}
+                        </p>
+                      )}
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Topics</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Topics *</label>
                       <input
                         type="text"
                         value={editLearningPlanForm.topics[0]}
-                        onChange={(e) => setEditLearningPlanForm({ ...editLearningPlanForm, topics: [e.target.value] })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        onChange={(e) => {
+                          setEditLearningPlanForm({ ...editLearningPlanForm, topics: [e.target.value] });
+                          if (editFormErrors.topics) setEditFormErrors({...editFormErrors, topics: ''});
+                        }}
+                        className={`w-full px-3 py-2 border ${editFormErrors.topics ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
                       />
+                      {editFormErrors.topics && (
+                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                          <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+                          {editFormErrors.topics}
+                        </p>
+                      )}
+                      <p className="mt-1 text-xs text-gray-500">Separate multiple topics with commas</p>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Timeline</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Timeline *</label>
                       <input
                         type="text"
                         value={editLearningPlanForm.timeline}
-                        onChange={(e) => setEditLearningPlanForm({ ...editLearningPlanForm, timeline: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        onChange={(e) => {
+                          setEditLearningPlanForm({ ...editLearningPlanForm, timeline: e.target.value });
+                          if (editFormErrors.timeline) setEditFormErrors({...editFormErrors, timeline: ''});
+                        }}
+                        className={`w-full px-3 py-2 border ${editFormErrors.timeline ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-indigo-500 focus:border-indigo-500`}
                       />
+                      {editFormErrors.timeline && (
+                        <p className="mt-1 text-sm text-red-600 flex items-center">
+                          <ExclamationCircleIcon className="h-4 w-4 mr-1" />
+                          {editFormErrors.timeline}
+                        </p>
+                      )}
                     </div>
                     <div className="flex space-x-3 pt-2">
                       <button
                         onClick={handleUpdateLearningPlan}
-                        className="flex items-center justify-center gap-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md"
+                        className={`flex items-center justify-center gap-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        disabled={isSubmitting}
                       >
-                        <CheckIcon className="h-4 w-4" /> Save
+                        <CheckIcon className="h-4 w-4" /> {isSubmitting ? 'Saving...' : 'Save'}
                       </button>
                       <button
-                        onClick={() => setEditLearningPlanId(null)}
+                        onClick={() => {
+                          setEditLearningPlanId(null);
+                          setEditFormErrors({ title: '', topics: '', timeline: '' });
+                        }}
                         className="flex items-center justify-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded-md"
+                        disabled={isSubmitting}
                       >
                         <XMarkIcon className="h-4 w-4" /> Cancel
                       </button>
