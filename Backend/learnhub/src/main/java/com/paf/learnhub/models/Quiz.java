@@ -41,4 +41,3 @@ public class Quiz {
         return questions; }
     public void setQuestions(List<Question> questions) { this.questions = questions; }
 } 
-// meka comment ekaka
