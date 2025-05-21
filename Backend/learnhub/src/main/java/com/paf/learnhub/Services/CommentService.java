@@ -36,7 +36,6 @@ public class CommentService {
         return commentRepository.findByPostId(postId);
     }
 
- 
     // Changed Code Section
     public Comment updateComment(String commentId, String content, String userId) {
         Optional<Comment> commentOpt = commentRepository.findById(commentId);
