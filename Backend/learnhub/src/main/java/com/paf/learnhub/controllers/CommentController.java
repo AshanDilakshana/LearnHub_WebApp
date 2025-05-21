@@ -31,9 +31,10 @@ public class CommentController {
         }
     }
 
+    // Read a comment
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable String postId) {
-        try { // Fetch all comments for a specific post
+        try {
             List<Comment> comments = commentService.getCommentsByPostId(postId);
             return ResponseEntity.ok(comments); // Return list of comments
         } catch (Exception e) {
@@ -65,7 +66,6 @@ public class CommentController {
 
     };
 
-    // Inner class used as DTO (Data Transfer Object) for update request
     public static class UpdateCommentRequest {
         private String userId;
         private String content;
