@@ -33,7 +33,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onAddComment }) => {
       alert('Please log in to comment');
       return;
     }
-    setLoading(true);
+    setLoading(true);// Show loading state
     try {
       const response = await fetch(`http://localhost:8080/api/comments/post/${postId}`, {
         method: 'POST',
