@@ -8,38 +8,41 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// Marks this class as a REST controller and maps all routes under "/api/comments"
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
-
+    // Automatically injects the CommentService (business logic layer)
     @Autowired
     private CommentService commentService;
 
+    // CREATE a new comment
     @PostMapping
     public ResponseEntity<Comment> addComment(@RequestBody Comment comment) {
-        try {
+        try {// the service to save the comment
             Comment savedComment = commentService.addComment(
                     comment.getPostId(),
                     comment.getUserId(),
                     comment.getUserName(),
                     comment.getContent());
-            return ResponseEntity.ok(savedComment);
+            return ResponseEntity.ok(savedComment);// return saved
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build(); // Return 400 Bad Request on error
         }
     }
 
+    // READ comments for a given post
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable String postId) {
-        try {
+        try { // Fetch all comments for a specific post
             List<Comment> comments = commentService.getCommentsByPostId(postId);
-            return ResponseEntity.ok(comments);
+            return ResponseEntity.ok(comments); // Return list of comments
         } catch (Exception e) {
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(404).build();//// Return 404 if post or comments not found
         }
     }
 
-    // Changed Code Section Start
+    // UPDATE a comment
     @PutMapping("/{id}")
     public ResponseEntity<Comment> updateComment(
             @PathVariable String id,
@@ -49,22 +52,26 @@ public class CommentController {
                     id,
                     request.getContent(),
                     request.getUserId());
-            return ResponseEntity.ok(updatedComment);
+            return ResponseEntity.ok(updatedComment);// Return updated comment
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().build(); // Return 400 on error
         }
     }
 
+    // DELETE a comment
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable String id, @RequestBody Comment comment) {
         commentService.deleteComment(id, comment.getUserId());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();// Return 200 OK on successful delete
+
     };
 
+    // Inner class used as DTO (Data Transfer Object) for update request
     public static class UpdateCommentRequest {
         private String userId;
         private String content;
 
+        // Getter and Setter for userId
         public String getUserId() {
             return userId;
         }
@@ -73,6 +80,7 @@ public class CommentController {
             this.userId = userId;
         }
 
+        // Getter and Setter for content
         public String getContent() {
             return content;
         }
