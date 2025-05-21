@@ -25,7 +25,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onAddComment }) => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
-  // *** Changed Code Section Start ***
+  // Function that runs when the comment form is submitted
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
