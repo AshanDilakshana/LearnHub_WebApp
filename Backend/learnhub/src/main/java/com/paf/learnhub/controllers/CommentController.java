@@ -66,6 +66,7 @@ public class CommentController {
 
     };
 
+    // DTO(DATA TRANSFER OBJECT)
     public static class UpdateCommentRequest {
         private String userId;
         private String content;
