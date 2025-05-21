@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface CommentFormProps {
-  postId: string;
-  onAddComment: (postId: string, comment: any) => void;
+  postId: string;// The ID of the post
+  onAddComment: (postId: string, comment: any) => void;// Function to call after a new comment is added
 }
-
+// List of avatar URLs to use
 const avatarUrls = [
   'https://avatar.iran.liara.run/public/1',
   'https://avatar.iran.liara.run/public/2',
@@ -14,7 +14,7 @@ const avatarUrls = [
   'https://avatar.iran.liara.run/public/5',
   'https://avatar.iran.liara.run/public/6',
 ];
-
+// Function to choose an avatar based on the user's ID
 const getAvatarUrl = (userId: string) => {
   const hash = userId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   return avatarUrls[hash % avatarUrls.length];
