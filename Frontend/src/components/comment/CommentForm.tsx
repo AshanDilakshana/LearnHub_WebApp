@@ -62,7 +62,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onAddComment }) => {
   return (
     <form onSubmit={handleSubmit} className="mt-2">
       <div className="flex items-start space-x-2">
-        {//Changed Code Section Start /}
+        {/* *** Changed Code Section Start *** */}
         <img
           src={user?.avatarUrl || getAvatarUrl(user?.id || 'default')}
           alt={user?.name || 'User'}
