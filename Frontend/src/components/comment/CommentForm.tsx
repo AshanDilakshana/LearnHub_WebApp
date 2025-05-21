@@ -34,7 +34,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onAddComment }) => {
       return;
     }
     setLoading(true);// Show loading state
-    try {
+    try {  // Send the comment to the backend server
       const response = await fetch(`http://localhost:8080/api/comments/post/${postId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
