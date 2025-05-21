@@ -47,22 +47,22 @@ const CommentForm: React.FC<CommentFormProps> = ({ postId, onAddComment }) => {
       if (!response.ok) {
         throw new Error(`Failed to post comment: ${response.status}`);
       }
-      const newComment = await response.json();
+      const newComment = await response.json();// Get the newly created comment
       onAddComment(postId, newComment);
       setContent('');
     } catch (error) {
       console.error('Error adding comment:', error);
       alert('Failed to post comment');
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
   };
-  // *** Changed Code Section End ***
+  // Changed Code Section End 
 
   return (
     <form onSubmit={handleSubmit} className="mt-2">
       <div className="flex items-start space-x-2">
-        {/* *** Changed Code Section Start *** */}
+        {//Changed Code Section Start /}
         <img
           src={user?.avatarUrl || getAvatarUrl(user?.id || 'default')}
           alt={user?.name || 'User'}
