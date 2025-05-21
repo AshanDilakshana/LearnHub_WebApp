@@ -72,5 +72,5 @@ public class CommentService {
         List<Comment> comments = commentRepository.findByUserId(userId);
         commentRepository.deleteAll(comments);
     }
-    // Changed Code Section End
+
 }
