@@ -19,7 +19,7 @@ public class CommentController {
     // CREATE a new comment
     @PostMapping
     public ResponseEntity<Comment> addComment(@RequestBody Comment comment) {
-        try {// the service to save the comment
+        try {
             Comment savedComment = commentService.addComment(
                     comment.getPostId(),
                     comment.getUserId(),
