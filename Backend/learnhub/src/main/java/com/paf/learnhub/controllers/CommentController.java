@@ -31,7 +31,6 @@ public class CommentController {
         }
     }
 
-    // READ comments for a given post
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<Comment>> getCommentsByPostId(@PathVariable String postId) {
         try { // Fetch all comments for a specific post
