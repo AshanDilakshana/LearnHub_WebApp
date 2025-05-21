@@ -9,4 +9,4 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
     List<Comment> findByPostId(String postId);
 
     List<Comment> findByUserId(String userId);
-}
+} // part end
