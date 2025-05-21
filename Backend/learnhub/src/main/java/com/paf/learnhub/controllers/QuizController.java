@@ -33,8 +33,22 @@ public class QuizController {
         }
     }
 
-
-
+    
+    @PutMapping("/{quizId}")
+    public ResponseEntity<Quiz> updateQuiz(
+            @PathVariable String quizId,
+            @RequestBody QuizRequest quizRequest) {
+        try {
+            Quiz quiz = quizService.updateQuiz(
+                    quizId,
+                    quizRequest.userId,
+                    quizRequest.questions
+            );
+            return ResponseEntity.ok(quiz);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
 
     @DeleteMapping("/{quizId}")
     public ResponseEntity<Void> deleteQuiz(
