@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { HomeIcon, VideoIcon, UserIcon, LogOutIcon } from 'lucide-react';
+import { HomeIcon, VideoIcon, UserIcon, LogOutIcon,BookIcon  } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 const Navbar: React.FC = () => {
   const {
@@ -21,7 +21,13 @@ const Navbar: React.FC = () => {
             <Link to="/" className="flex flex-col items-center text-gray-700 hover:text-blue-600">
               <HomeIcon size={24} />
               <span className="text-xs mt-1">Home</span>
+              
             </Link>
+              <Link to="/learning-plans" className="flex flex-col items-center text-gray-700 hover:text-blue-600">
+              <BookIcon  size={24} />
+              <span className="text-xs mt-1">Plans</span>
+            </Link>
+
             <Link to="/videos" className="flex flex-col items-center text-gray-700 hover:text-blue-600">
               <VideoIcon size={24} />
               <span className="text-xs mt-1">Videos</span>
