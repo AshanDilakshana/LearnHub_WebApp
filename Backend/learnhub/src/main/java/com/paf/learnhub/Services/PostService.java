@@ -25,7 +25,7 @@ public class PostService {
     private GridFsTemplate gridFsTemplate;
 
     @Autowired
-    private CommentService commentService; // Added to handle comment deletion
+    private CommentService commentService; // handle comment deletion
 
     public Post createPost(String userId, String userName, String content, String imageId) {
         Post post = new Post();
@@ -57,7 +57,8 @@ public class PostService {
         post.setContent(content);
         return postRepository.save(post);
     }
-
+    
+    //delete post
     public void deletePost(String id, String userId) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
@@ -66,9 +67,9 @@ public class PostService {
         }
         // Delete associated videos
         videoService.deleteVideosByPostId(id);
-        // Delete associated comments
+        
         commentService.deleteCommentsByPostId(id);
-        // Delete GridFS image if exists
+        
         if (post.getImageId() != null) {
             Query query = new Query(Criteria.where("_id").is(new ObjectId(post.getImageId())));
             gridFsTemplate.delete(query);
@@ -84,13 +85,13 @@ public void deletePostsByUserId(String userId) {
     // Delete all comments by the user
     commentService.deleteCommentsByUserId(userId);
     
-    // Delete each post and its associated resources
+    /// Delete each post and its associated resources
     for (Post post : posts) {
-        // Delete associated videos
+       
         videoService.deleteVideosByPostId(post.getId());
-        // Delete associated comments
+        
         commentService.deleteCommentsByPostId(post.getId());
-        // Delete GridFS image if exists
+        
         if (post.getImageId() != null) {
             Query query = new Query(Criteria.where("_id").is(new ObjectId(post.getImageId())));
             gridFsTemplate.delete(query);
