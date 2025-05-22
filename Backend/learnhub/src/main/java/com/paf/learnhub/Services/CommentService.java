@@ -51,18 +51,18 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    // Delete all comments under a specific post (e.g., when post is deleted)
+    // Delete all comments under a specific post 
     public void deleteComment(String commentId, String userId) {
         Optional<Comment> commentOpt = commentRepository.findById(commentId);
         if (!commentOpt.isPresent() || !commentOpt.get().getUserId().equals(userId)) { // Check if the comment exists
-                                                                                       // and if the user owns it
+                                                                                      
             throw new RuntimeException("Comment not found or unauthorized");
         }
         commentRepository.deleteById(commentId);
     }
 
-    // Delete all comments made by a specific user (e.g., if user account is
-    // removed)
+    // Delete all comments made by a specific user
+    
     public void deleteCommentsByPostId(String postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
         commentRepository.deleteAll(comments);
