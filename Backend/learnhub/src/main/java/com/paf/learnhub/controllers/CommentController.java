@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Marks this class as a REST controller and maps all routes under "/api/comments"
+// Marks this class as a REST controller and maps all routes under 
 @RestController
 @RequestMapping("/api/comments")
 public class CommentController {
