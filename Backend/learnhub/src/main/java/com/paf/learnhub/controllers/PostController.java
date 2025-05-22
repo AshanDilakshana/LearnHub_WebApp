@@ -80,8 +80,8 @@ public class PostController {
                 org.springframework.data.mongodb.core.query.Criteria.where("_id").is(new ObjectId(imageId))
             ));
             if (file == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);             }
+                
             InputStream inputStream = gridFsOperations.getResource(file).getInputStream();
             byte[] imageBytes = inputStream.readAllBytes();
             inputStream.close();
