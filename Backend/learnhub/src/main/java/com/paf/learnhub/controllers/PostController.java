@@ -81,7 +81,7 @@ public class PostController {
             ));
             if (file == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);             }
-                
+
             InputStream inputStream = gridFsOperations.getResource(file).getInputStream();
             byte[] imageBytes = inputStream.readAllBytes();
             inputStream.close();
@@ -154,6 +154,9 @@ public class PostController {
             );
         }
     }
+
+
+    //err checking
     private static class ErrorResponse {
         private String error;
         private String message;

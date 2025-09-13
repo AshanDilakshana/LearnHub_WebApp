@@ -63,8 +63,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         if (!post.getUserId().equals(userId)) {
-            throw new RuntimeException("Unauthorized");
-        }
+            throw new RuntimeException("Unauthorized");}
         // Delete associated videos
         videoService.deleteVideosByPostId(id);
         
@@ -72,8 +71,8 @@ public class PostService {
         
         if (post.getImageId() != null) {
             Query query = new Query(Criteria.where("_id").is(new ObjectId(post.getImageId())));
-            gridFsTemplate.delete(query);
-        }
+            gridFsTemplate.delete(query); }
+       
         // Delete post
         postRepository.deleteById(id);
     }
